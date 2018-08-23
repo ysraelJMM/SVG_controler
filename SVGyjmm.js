@@ -35,6 +35,8 @@ function n_svg(tipo, id, padre) {
     }
     this.add_event(event, () => ob.s_att(atributes));
   }
+  this.length = () => this.svg.getTotalLength();
+  this.box = () => this.svg.getBBox();
 }
 
 function inser_nodos(padre, nodos) {
