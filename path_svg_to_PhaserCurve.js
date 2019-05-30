@@ -281,5 +281,12 @@ function normalizePath(d) {
         y = sy;
         path['closePath']();
       }
-    }   
+    } 
+    return{
+      path: path,              // path curve Phaser
+      data: normalized.trim(), // data normalizada
+      //coordenadas del origen de la curva. Util si se quiere mostrar la curva y posicionar el objeto
+      x: x0,                   
+      y: y0
+    }
   }
