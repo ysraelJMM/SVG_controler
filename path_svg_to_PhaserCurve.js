@@ -278,9 +278,6 @@ para poder exportarlo al formato requerido por en Phaser.
       }
     }
     return {
-      image,
-      config,
-      lineStyle,
       path: path, // path curve Phaser
       data: normalized.trim(), // data normalizada
       //coordenadas del origen de la curva. Util si se quiere mostrar la curva y posicionar el objeto
