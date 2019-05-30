@@ -14,7 +14,7 @@ Sería interesante que ya lo tuviera implementado.
  * and full commands, rather than relative coordinates
  * and/or shortcut commands.
  */
-function normalizePath(d) {
+  function normalizePath(d) {
     // preprocess "d" so that we have spaces between values
     d = d
       .replace(/,/g, " ") // replace commas with spaces
@@ -40,8 +40,6 @@ function normalizePath(d) {
       cy = 0,
       cx2 = 0,
       cy2 = 0,
-      nx = 0,
-      ny = 0,
       x0 = 0,
       y0 = 0,
       io = true,
@@ -90,12 +88,12 @@ function normalizePath(d) {
         sy = y;
         normalized += x + " " + y + " ";
         if (io) {
-          path = new Phaser.Curves.Path(x, y);  //Crea un nuevo path
+          path = new Phaser.Curves.Path(x, y);
           x0 = x;
           y0 = y;
           io = false;
         } else {
-          path.moveTo(x, y);                  //evita generar un nuevo path, y solamente ubica un nuevo punto
+          path.moveTo(x, y);
         }
 
         if (alen > 2) {
@@ -219,11 +217,10 @@ function normalizePath(d) {
           path['cubicBezierTo'](x, y, cx, cy, cx2, cy2);
         }
       } else if (lop === "a") {
-        // elliptical arc  commands          https://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
+        // elliptical arc  commands        https://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
         var ratio = 180 / Math.PI;
-        let dir, dar, starAngle, endAngle,
-        nx = 0,
-        ny = 0;
+        let dir, dar, starAngle, endAngle, nx = 0,
+          ny = 0;
         for (a = 0; a < alen; a += 7) {
           if (op === "a") {
             rx = args[a];
@@ -241,28 +238,28 @@ function normalizePath(d) {
             rotation = args[a + 2];
             dir = args[a + 3];
             dar = args[a + 4];
-            nx = x - args[a + 5];
-            ny = y - args[a + 6];
+            nx = args[a + 5] - x;
+            ny = args[a + 6] - y;
             x = args[a + 5];
             y = args[a + 6];
           }
           if (rotation) {
-            let rAng = -rotation / ratio;  //Ángulo de rotación
+            let rAng = -rotation / ratio;   //Ángulo de rotación
             let nnx = nx * Math.cos(rAng) - ny * Math.sin(rAng);
             let nny = ny * Math.cos(rAng) + nx * Math.sin(rAng);
-            nx = nnx;           //Nuevo vector de direción
+            nx = nnx;             //Nuevo vector de direción
             ny = nny;
           }
-          ny = ny * (rx / ry); //Ratio de proporción para la elipse
-          angle = ratio * Math.asin(Math.hypot(nx, ny) / (2 * rx)); //ángulo interno generado por la cuerda (arco menor)
-          angle2 = ratio * Math.atan2(ny, nx);                      // pendiente de vector
-          angle2 < 0 ? angle2 += 360 : '';                         // Para mantener el angulo dentro de la circunferencia trigonométrica
+          ny = ny * (rx / ry);    //Ratio de proporción para la elipse
+          angle = ratio * Math.asin(Math.hypot(nx, ny) / (2 * rx));   //ángulo interno generado por la cuerda (arco menor)
+          angle2 = ratio * Math.atan2(ny, nx);                        // pendiente de vector
+          angle2 < 0 ? angle2 += 360 : '';                            // Para mantener el angulo dentro de la circunferencia trigonométrica
 
           if (dar) {                           //sentido de rotación (horario, antihorario)
             starAngle = -90 + angle2 - angle;
-            starAngle = 90 + angle2 + angle;
-          }else{
             endAngle = starAngle + (2 * angle);
+          } else {
+            starAngle = 90 + angle2 + angle;
             endAngle = starAngle - (2 * angle);
           }
 
@@ -272,7 +269,7 @@ function normalizePath(d) {
           }
 
           normalized += ["A", rx, ry, rotation, dir, dar, x, y, ''].join(" ");
-          path['ellipseTo'](rx, ry, starAngle, endAngle, !dar, rotation); // Algoritmo arreglado por mí (Ysrael);
+          path['ellipseTo'](rx, ry, starAngle, endAngle, !dar, rotation);   // Algoritmo arreglado por mí (Ysrael);
         }
       } else if (lop === "z") {
         normalized += "Z ";
@@ -281,12 +278,15 @@ function normalizePath(d) {
         y = sy;
         path['closePath']();
       }
-    } 
-    return{
+    }
+    return {
+      image,
+      config,
+      lineStyle,
       path: path,              // path curve Phaser
       data: normalized.trim(), // data normalizada
       //coordenadas del origen de la curva. Util si se quiere mostrar la curva y posicionar el objeto
-      x: x0,                   
+      x: x0,
       y: y0
     }
   }
